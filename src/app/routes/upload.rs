@@ -12,12 +12,12 @@ use crate::{
   AppConfig,
 };
 
-#[post("/upload?<filename>", data = "<file>")]
+#[put("/upload?<filename>", data = "<file>")]
 pub async fn upload_route(
+  _api_key: ApiKey<'_>,
   filename: String,
   mut file: TempFile<'_>,
   config: &State<AppConfig>,
-  _api_key: ApiKey<'_>,
 ) -> std::io::Result<String> {
   let path: &Path = Path::new(&filename);
   let basename = path
