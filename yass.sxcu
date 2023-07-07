@@ -1,0 +1,15 @@
+﻿{
+  "Version": "14.1.4",
+  "Name": "yass",
+  "DestinationType": "ImageUploader, TextUploader, FileUploader",
+  "RequestMethod": "POST",
+  "RequestURL": "https://your.domain.com/upload",
+  "Parameters": {
+    "filename": "{filename}"
+  },
+  "Headers": {
+    "Authorization": "your-api-key"
+  },
+  "Body": "Binary",
+  "URL": "{response}"
+}

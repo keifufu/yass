@@ -1,0 +1,92 @@
+html,
+body {
+  height: 100%;
+  background-color: var(--base);
+  color: var(--text);
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+body {
+  margin: 0;
+  background-color: var(--base);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: Roboto, sans-serif;
+}
+.container {
+  width: 100%;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+* {
+  min-width: 0;
+  min-height: 0;
+}
+
+img {
+  object-fit: contain;
+}
+
+.file-container {
+  background-color: var(--surface0);
+  border-radius: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 3px 15px;
+  width: 100%;
+}
+.content {
+  border-radius: 1rem;
+  cursor: pointer;
+  width: 100%;
+  max-height: 70vh;
+}
+@media (min-width: 600px) {
+  .file-container {
+    width: 60%;
+  }
+}
+.file-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.file-info {
+  display: flex;
+  margin: 1rem;
+  justify-content: space-between;
+  overflow: hidden;
+}
+.file-name {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  flex: 1;
+}
+.file-size {
+  color: var(--subtext0);
+  margin-left: 0.5rem;
+}
+.download {
+  margin-right: 1rem;
+  height: 2rem;
+  width: 2rem;
+  color: var(--text);
+  background-color: var(--surface1);
+  border-radius: 0.5rem;
+  flex-shrink: 0;
+}
+.download:hover,
+.download:active {
+  background-color: var(--surface2);
+  cursor: pointer;
+}
+.download > svg {
+  stroke: var(--text);
+  padding: 0.3rem;
+}

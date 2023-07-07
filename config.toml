@@ -1,0 +1,16 @@
+# Path to upload files to.
+# Note that it will create the following subdirectories once necessary:
+# - Images
+# - Videos
+# - Audio
+# - Text
+# - Files
+data-path = "/data/ShareX"
+# Put some key here, it's used for authentication
+api-key = ""
+# The domain to return to ShareX.
+# Given the example below, a returned url is:
+# https://domain.com/dNd8wa3
+url = "https://your.domain.com/"
+# The port this will listen on
+port = 8080

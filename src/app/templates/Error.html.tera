@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="/assets/js/theme.js"></script>
+    <link rel="stylesheet" href="/assets/css/base.css" />
+    <style>
+      .header {
+        font-size: 10rem;
+        font-weight: bold;
+      }
+      .subheader {
+        font-size: 3rem;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">{{ header }}</div>
+      <div class="subheader">{{ subheader }}</div>
+      <p>{{ text }}</p>
+    </div>
+  </body>
+</html>

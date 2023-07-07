@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="/assets/js/theme.js"></script>
+    <link rel="stylesheet" href="/assets/css/base.css" />
+    <style>
+      .overlay {
+        position: fixed;
+        height: 100%;
+        width: 100%;
+      }
+      .overlay-dim {
+        height: 100%;
+        width: 100%;
+        background-color: black;
+        opacity: 45%;
+        cursor: pointer;
+      }
+      .overlay-content {
+        border-radius: 1rem;
+        max-width: 100%;
+        max-height: 100%;
+        z-index: 9;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="overlay" style="display: none">
+      <img class="overlay-content" src="/download/{{ id }}" />
+      <div class="overlay-dim"></div>
+    </div>
+    <div class="container">
+      <div class="file-container">
+        <img class="content" src="/download/{{ id }}" />
+        <div class="file-footer">
+          <div class="file-info">
+            <div class="file-name">{{ filename }}</div>
+            <div class="file-size">({{ filesize }})</div>
+          </div>
+          <a href="/download/{{ id }}" class="download">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-width="2"
+              stroke-linecap="round"
+            >
+              <path
+                d="M12 5v10m5-4l-4.293 4.293a1 1 0 0 1-1.414 0L7 11m12 9H5"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <script>
+      const toggle = () => {
+        const el = document.querySelector(".overlay");
+        if (el.style.display === "none") {
+          el.style.display = "block";
+        } else {
+          el.style.display = "none";
+        }
+      };
+
+      document.querySelector(".content").addEventListener("click", toggle);
+      document
+        .querySelector(".overlay-content")
+        .addEventListener("click", toggle);
+      document.querySelector(".overlay-dim").addEventListener("click", toggle);
+    </script>
+  </body>
+</html>
