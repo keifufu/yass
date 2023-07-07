@@ -25,7 +25,6 @@ There are many others, but this one is mine :3
 - This is only intended to be used by one person.
 - A reverse proxy should be used to configure ssl and handle path prefixes if needed.
 - All uploaded files are public by default (although that should be obvious).
-- Authentication is only validated after the upload completed, making it easy to abuse. I recommend configuring your reverse proxy to only allow uploads from certain IPs
 
 ## Usage
 
@@ -37,8 +36,29 @@ There are many others, but this one is mine :3
 
 ## Example Nginx config:
 
-```
-TODO
+```nginxconf
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name your.domain.com;
+
+  # This makes sure to cancel the request immediately if the api key is invalid.
+  # With cloudflare however, cf buffers the request so it might seem like it's
+  # susceptible by a DoS attack, however it's really not. Once cloudflare sends
+  # the buffered request we immediately abort it if the api key is invalid.
+  location / {
+    client_max_body_size 0;
+    client_body_buffer_size 1m;
+    proxy_request_buffering off;
+    proxy_pass http://127.0.0.1:8080;
+    proxy_intercept_errors on;
+    error_page 401 @error;
+  }
+
+  location @error {
+    return 444;
+  }
+}
 ```
 
 ## TODO
