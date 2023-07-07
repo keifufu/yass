@@ -19,12 +19,12 @@ impl<'r> FromRequest<'r> for ApiKey<'r> {
   async fn from_request(request: &'r Request<'_>) -> Outcome<Self, Self::Error> {
     let config = match request.guard::<&State<AppConfig>>().await.succeeded() {
       Some(config) => config,
-      None => return Outcome::Failure((Status::InternalServerError, ApiKeyError::Missing)),
+      None => return Outcome::Failure((Status::Unauthorized, ApiKeyError::Missing)),
     };
     match request.headers().get_one("Authorization") {
-      None => Outcome::Failure((Status::BadRequest, ApiKeyError::Missing)),
+      None => Outcome::Failure((Status::Unauthorized, ApiKeyError::Missing)),
       Some(api_key) if api_key == config.api_key => Outcome::Success(ApiKey(api_key)),
-      Some(_) => Outcome::Failure((Status::BadRequest, ApiKeyError::Invalid)),
+      Some(_) => Outcome::Failure((Status::Unauthorized, ApiKeyError::Invalid)),
     }
   }
 }
