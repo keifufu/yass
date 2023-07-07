@@ -34,32 +34,10 @@ There are many others, but this one is mine :3
 - Import [yass.sxcu](https://raw.githubusercontent.com/keifufu/yass/main/yass.sxcu) and set it as your default uploader for Images, Text and Files  
   (You will need to modify the domain and api-key)
 
-## Example Nginx config:
+## Example configs:
 
-```nginxconf
-server {
-  listen 443 ssl http2;
-  listen [::]:443 ssl http2;
-  server_name your.domain.com;
-
-  # This makes sure to cancel the request immediately if the api key is invalid.
-  # With cloudflare however, cf buffers the request so it might seem like it's
-  # susceptible by a DoS attack, however it's really not. Once cloudflare sends
-  # the buffered request we immediately abort it if the api key is invalid.
-  location / {
-    client_max_body_size 0;
-    client_body_buffer_size 1m;
-    proxy_request_buffering off;
-    proxy_pass http://127.0.0.1:8080;
-    proxy_intercept_errors on;
-    error_page 401 @error;
-  }
-
-  location @error {
-    return 444;
-  }
-}
-```
+- [nginx](https://github.com/keifufu/yass/blob/main/yass.nginx)
+- [systemd service](https://github.com/keifufu/yass/blob/main/yass.service)
 
 ## TODO
 
