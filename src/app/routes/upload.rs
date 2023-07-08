@@ -46,7 +46,12 @@ pub async fn upload_route(
     }
   }
 
-  file.persist_to(file_path).await.unwrap();
+  // Note: persist_to will not work since it can't handle moving it to a different disk.
+  // OsCode 18 on linux, OsCode 17 on windows. move_copy_to fixes this.
+  // Another way would be to set the temp_dir to the same drive, but then there is no guarantee
+  // that the temp directory will be cleaned up. Rocket does seem to clean it if an upload gets
+  // cancelled but what if yass crashes? yeah. move_copy_to is fine.
+  file.move_copy_to(file_path).await.unwrap();
 
   Ok(format!(
     "{}/{}.{}",
