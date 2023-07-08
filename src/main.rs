@@ -19,7 +19,8 @@ pub struct AppConfig {
   pub data_path: PathBuf,
   pub api_key: String,
   pub url: String,
-  pub port: i64,
+  pub port: usize,
+  pub key_length: usize,
 }
 
 #[launch]
@@ -33,7 +34,8 @@ fn rocket() -> _ {
     data_path: PathBuf::from(config.get_string("data-path").unwrap()),
     api_key: config.get_string("api-key").unwrap(),
     url: config.get_string("url").unwrap(),
-    port: config.get_int("port").unwrap(),
+    port: config.get_int("port").unwrap() as usize,
+    key_length: config.get_int("key-length").unwrap() as usize,
   };
 
   let mut tera = Tera::default();

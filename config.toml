@@ -10,7 +10,10 @@ data-path = "/data/ShareX"
 api-key = ""
 # The domain to return to ShareX.
 # Given the example below, a returned url is:
-# https://your.domain.com/dNd8wa3
+# https://your.domain.com/dNd8wa3dmW
 url = "https://your.domain.com/"
 # The port this will listen on
 port = 8080
+# Length of the randomly generated key in URLs
+# Default is 10
+key-length = 10

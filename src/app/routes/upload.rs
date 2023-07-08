@@ -1,12 +1,13 @@
 use std::path::Path;
 use tokio::fs::create_dir_all;
 
+use async_recursion::async_recursion;
 use rand::distributions::{Alphanumeric, DistString};
-use rocket::{fs::TempFile, State};
+use rocket::{fs::TempFile, response::status::Conflict, State};
 
 use crate::{
   app::{
-    utils::{get_file_type, FileType},
+    utils::{find_file_with_key, get_file_type, FileType},
     validators::apikey::ApiKey,
   },
   AppConfig,
@@ -18,15 +19,18 @@ pub async fn upload_route(
   filename: String,
   mut file: TempFile<'_>,
   config: &State<AppConfig>,
-) -> std::io::Result<String> {
+) -> Result<String, Conflict<String>> {
+  let key = match get_key(config, 0).await {
+    Some(key) => key,
+    None => return Err(Conflict(None)),
+  };
   let path: &Path = Path::new(&filename);
   let basename = path
     .file_stem()
     .and_then(|filename| filename.to_str())
     .unwrap_or("");
   let extension = path.extension().and_then(|ext| ext.to_str()).unwrap_or("");
-  let id = Alphanumeric.sample_string(&mut rand::thread_rng(), 7);
-  let new_file_name = format!("{}-{}.{}", basename, id, extension);
+  let new_file_name = format!("{}-{}.{}", basename, key, extension);
 
   let file_path = match get_file_type(path) {
     FileType::Image => config.data_path.join("Images").join(new_file_name),
@@ -37,17 +41,32 @@ pub async fn upload_route(
   };
 
   if let Some(parent) = file_path.parent() {
-    if let Err(err) = create_dir_all(parent).await {
-      eprintln!("Failed to create parent folders: {}", err);
+    if create_dir_all(parent).await.is_err() {
+      return Err(Conflict(None));
     }
   }
 
-  file.persist_to(file_path).await?;
+  file.persist_to(file_path).await.unwrap();
 
   Ok(format!(
     "{}/{}.{}",
     config.url.strip_suffix('/').unwrap_or(&config.url),
-    id,
+    key,
     extension
   ))
+}
+
+#[async_recursion]
+async fn get_key(config: &State<AppConfig>, depth: usize) -> Option<String> {
+  if depth > 10 {
+    return None;
+  }
+  let key = Alphanumeric.sample_string(&mut rand::thread_rng(), config.key_length);
+  if find_file_with_key(config.data_path.clone(), &key)
+    .await
+    .is_some()
+  {
+    return get_key(config, depth + 1).await;
+  }
+  Some(key)
 }

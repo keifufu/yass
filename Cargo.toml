@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+async-recursion = "1.0.4"
 config = "0.13.3"
 html-escape = "0.2.13"
 humansize = "2.1.3"
