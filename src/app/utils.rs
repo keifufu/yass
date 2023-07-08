@@ -5,13 +5,14 @@ use std::path::{Path, PathBuf};
 use tera::{Context, Tera};
 use tokio::fs::read_dir;
 
-pub async fn find_file_with_id(dir_path: PathBuf, id: &String) -> Option<PathBuf> {
-  let id = format!(
+pub async fn find_file_with_key(dir_path: PathBuf, key: &String) -> Option<PathBuf> {
+  let key = format!(
     "-{}",
-    id.trim_end_matches('.')
+    key
+      .trim_end_matches('.')
       .rsplit_once('.')
       .map(|(name, _)| name)
-      .unwrap_or(id)
+      .unwrap_or(key)
   );
   let prefixes = vec!["Images", "Videos", "Audio", "Text", "Files"];
 
@@ -28,7 +29,7 @@ pub async fn find_file_with_id(dir_path: PathBuf, id: &String) -> Option<PathBuf
           .file_stem()
           .and_then(|stem| stem.to_str())
           .unwrap_or("");
-        if basename.ends_with(&id) {
+        if basename.ends_with(&key) {
           let file_path = sub_dir_path.join(file_name);
           return Some(file_path);
         }

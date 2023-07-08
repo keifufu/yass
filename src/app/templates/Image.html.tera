@@ -34,18 +34,18 @@
   </head>
   <body>
     <div class="overlay" style="display: none">
-      <img class="overlay-content" src="/download/{{ id }}" />
+      <img class="overlay-content" src="/download/{{ key }}" />
       <div class="overlay-dim"></div>
     </div>
     <div class="container">
       <div class="file-container">
-        <img class="content" src="/download/{{ id }}" />
+        <img class="content" src="/download/{{ key }}" />
         <div class="file-footer">
           <div class="file-info">
             <div class="file-name">{{ filename }}</div>
             <div class="file-size">({{ filesize }})</div>
           </div>
-          <a href="/download/{{ id }}" class="download">
+          <a href="/download/{{ key }}" class="download">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
