@@ -2,27 +2,29 @@ use rocket::{
   response::{content::RawHtml, status::NotFound, Redirect},
   Either, State,
 };
+use rocket_governor::RocketGovernor;
 use tera::{Context, Tera};
 use tokio::fs::read_to_string;
 
 use crate::{
   app::{
     utils::{find_file_with_key, get_file_metadata, render_not_found, FileType},
-    validators::botrequest::IsBotRequest,
+    validators::{botrequest::IsBotRequest, ratelimit::RateLimitGuard},
   },
   AppConfig,
 };
 
 #[get("/<key>")]
 pub async fn view_route(
+  _rl: RocketGovernor<'_, RateLimitGuard>,
   key: String,
   is_bot: IsBotRequest,
-  config: &State<AppConfig>,
   tera: &State<Tera>,
 ) -> Result<RawHtml<String>, Either<Redirect, NotFound<RawHtml<String>>>> {
   if is_bot.0 {
     return Err(Either::Left(Redirect::to(format!("/download/{}", key))));
   }
+  let config = AppConfig::get();
 
   let file_path = find_file_with_key(config.data_path.clone(), &key).await;
   if let Some(path) = file_path {

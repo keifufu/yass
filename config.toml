@@ -17,3 +17,6 @@ port = 8080
 # Length of the randomly generated key in URLs
 # Default is 10
 key-length = 10
+# How many requests per minute before getting rate-limited
+rpm-view = 30
+rpm-upload = 60

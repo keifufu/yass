@@ -19,3 +19,14 @@ pub async fn not_found_catcher(req: &Request<'_>) -> RawHtml<String> {
   let tera = req.guard::<&State<Tera>>().await.unwrap();
   render_not_found(tera)
 }
+
+#[catch(429)]
+pub async fn rate_limit_catcher(req: &Request<'_>) -> RawHtml<String> {
+  let tera = req.guard::<&State<Tera>>().await.unwrap();
+  let mut context = Context::new();
+  context.insert("title", "429 Rate Limited");
+  context.insert("header", "429");
+  context.insert("subheader", "You've been rate limited");
+  context.insert("text", "Please slow down and try again later");
+  RawHtml(tera.render("Error", &context).unwrap())
+}

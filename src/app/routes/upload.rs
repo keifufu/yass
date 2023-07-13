@@ -1,25 +1,27 @@
+use rocket_governor::RocketGovernor;
 use std::path::Path;
 use tokio::fs::create_dir_all;
 
 use async_recursion::async_recursion;
 use rand::distributions::{Alphanumeric, DistString};
-use rocket::{fs::TempFile, response::status::Conflict, State};
+use rocket::{fs::TempFile, response::status::Conflict};
 
 use crate::{
   app::{
     utils::{find_file_with_key, get_file_type, FileType},
-    validators::apikey::ApiKey,
+    validators::{apikey::ApiKey, ratelimit::RateLimitGuard},
   },
   AppConfig,
 };
 
 #[put("/upload?<filename>", data = "<file>")]
 pub async fn upload_route(
+  _rl: RocketGovernor<'_, RateLimitGuard>,
   _api_key: ApiKey<'_>,
   filename: String,
   mut file: TempFile<'_>,
-  config: &State<AppConfig>,
 ) -> Result<String, Conflict<String>> {
+  let config = AppConfig::get();
   let key = match get_key(config, 0).await {
     Some(key) => key,
     None => return Err(Conflict(None)),
@@ -62,7 +64,7 @@ pub async fn upload_route(
 }
 
 #[async_recursion]
-async fn get_key(config: &State<AppConfig>, depth: usize) -> Option<String> {
+async fn get_key(config: &AppConfig, depth: usize) -> Option<String> {
   if depth > 10 {
     return None;
   }
