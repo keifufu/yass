@@ -4,12 +4,14 @@ After=network.target
 
 [Service]
 Type=simple
+User=www-data
+Group=www-data
 ExecStart=/yass/yass
 WorkingDirectory=/yass
 Restart=on-failure
 RestartSec=5s
-StandardOutput=syslog
-StandardError=syslog
+StandardOutput=journal[+console]
+StandardError=journal[+console]
 SyslogIdentifier=yass
 
 [Install]
