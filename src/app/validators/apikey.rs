@@ -1,7 +1,6 @@
 use rocket::{
   http::Status,
   request::{FromRequest, Outcome, Request},
-  State,
 };
 
 use crate::AppConfig;
@@ -17,10 +16,7 @@ pub enum ApiKeyError {
 impl<'r> FromRequest<'r> for ApiKey<'r> {
   type Error = ApiKeyError;
   async fn from_request(request: &'r Request<'_>) -> Outcome<Self, Self::Error> {
-    let config = match request.guard::<&State<AppConfig>>().await.succeeded() {
-      Some(config) => config,
-      None => return Outcome::Failure((Status::Unauthorized, ApiKeyError::Missing)),
-    };
+    let config = AppConfig::get();
     match request.headers().get_one("Authorization") {
       None => Outcome::Failure((Status::Unauthorized, ApiKeyError::Missing)),
       Some(api_key) if api_key == config.api_key => Outcome::Success(ApiKey(api_key)),
