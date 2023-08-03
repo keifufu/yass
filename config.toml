@@ -20,3 +20,5 @@ key-length = 10
 # How many requests per minute before getting rate-limited
 rpm-view = 30
 rpm-upload = 60
+# Block browsers supporting the Web Environment Integrity API
+block_wei_browsers = true
