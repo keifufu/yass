@@ -26,16 +26,35 @@ There are many others, but this one is mine :3
 - A reverse proxy should be used to configure ssl and handle path prefixes if needed.
 - All uploaded files are public by default (although that should be obvious).
 
-## Usage
+## Getting Started
 
-- Download the zip from [Releases](https://github.com/keifufu/yass/releases)
-- Configure config.toml
-- Run yass on system startup
-- Import [yass.sxcu](https://raw.githubusercontent.com/keifufu/yass/main/yass.sxcu) and set it as your default uploader for Images, Text and Files  
-  (You will need to modify the domain and api-key)
+### With Docker
+
+Using docker compose:
+
+```yaml
+version: "3"
+services:
+  cf-ddns:
+    image: keifufu/yass:latest
+    container_name: yass
+    restart: unless-stopped
+    volumes:
+      - ./config:/app/config
+      - /data/ShareX:/data/ShareX
+    ports:
+      - 8080:8080
+```
+
+or docker run:
+
+```
+docker run -v ./config:/app/config keifufu/cf-ddns:latest
+```
 
 ## Example configs:
 
+- [yass.sxcu](https://raw.githubusercontent.com/keifufu/yass/main/yass.sxcu)
 - [nginx](https://github.com/keifufu/yass/blob/main/yass.nginx)
 - [systemd service](https://github.com/keifufu/yass/blob/main/yass.service)
 

@@ -8,13 +8,19 @@ use app::routes::{
 use config::Config;
 use once_cell::sync::Lazy;
 use rocket::data::{ByteUnit, Limits};
-use std::io::Write;
+use std::{
+  env::current_exe,
+  fs::{create_dir, File},
+  io::Write,
+};
 use std::{fs::OpenOptions, path::PathBuf};
 use tera::Tera;
 
 #[macro_use]
 extern crate rocket;
 mod app;
+
+const DEFAULT_CONFIG: &str = include_str!("data/config.toml");
 
 #[derive(Debug)]
 pub struct AppConfig {
@@ -30,16 +36,29 @@ pub struct AppConfig {
 static APP_CONFIG: Lazy<AppConfig> = Lazy::new(AppConfig::read);
 impl AppConfig {
   fn read() -> Self {
-    let config_path = "config.toml";
+    let exe_path = current_exe().unwrap();
+    let current_dir = exe_path.parent().unwrap();
+    let config_dir = current_dir.join("config");
+    let config_path = config_dir.join("config.toml");
+
+    if !config_dir.exists() {
+      create_dir(&config_dir).unwrap();
+    }
+
+    if !config_path.exists() {
+      let mut file = File::create(&config_path).unwrap();
+      file.write_all(DEFAULT_CONFIG.as_bytes()).unwrap();
+    }
+
     let cfg = Config::builder()
-      .add_source(config::File::with_name(config_path))
+      .add_source(config::File::from(config_path.clone()))
       .build()
       .unwrap();
 
     if cfg.get_bool("block_wei_browsers").is_err() {
       let mut file = OpenOptions::new()
         .append(true)
-        .open(config_path)
+        .open(&config_path)
         .expect("Failed to open config file");
 
       // Make sure a newline exists
@@ -61,7 +80,7 @@ impl AppConfig {
     }
 
     let config = Config::builder()
-      .add_source(config::File::with_name("config.toml"))
+      .add_source(config::File::from(config_path.clone()))
       .build()
       .unwrap();
 
