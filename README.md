@@ -55,6 +55,7 @@ docker run -v ./config:/app/config keifufu/cf-ddns:latest
 ## Example configs:
 
 - [yass.sxcu](https://raw.githubusercontent.com/keifufu/yass/main/yass.sxcu)
+- [yass.sh](https://raw.githubusercontent.com/keifufu/yass/main/yass.sh)
 - [nginx](https://github.com/keifufu/yass/blob/main/yass.nginx)
 - [systemd service](https://github.com/keifufu/yass/blob/main/yass.service)
 
