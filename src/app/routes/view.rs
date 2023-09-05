@@ -1,4 +1,5 @@
 use rocket::{
+  fs::NamedFile,
   response::{content::RawHtml, status::NotFound, Redirect},
   Either, State,
 };
@@ -14,18 +15,27 @@ use crate::{
   AppConfig,
 };
 
-#[get("/<key>")]
+#[get("/<key>?<raw>")]
 pub async fn view_route(
   _rl: RocketGovernor<'_, RateLimitGuard>,
   key: String,
   is_bot: IsBotRequest,
   tera: &State<Tera>,
-) -> Result<RawHtml<String>, Either<Redirect, NotFound<RawHtml<String>>>> {
+  raw: bool,
+) -> Result<Either<RawHtml<String>, NamedFile>, Either<Redirect, NotFound<RawHtml<String>>>> {
+  if raw {
+    let config = AppConfig::get();
+    let file_path = find_file_with_key(config.data_path.clone(), &key).await;
+    if let Some(path) = file_path {
+      return Ok(Either::Right(NamedFile::open(path).await.unwrap()));
+    }
+  }
+
   if is_bot.0 {
     return Err(Either::Left(Redirect::to(format!("/download/{}", key))));
   }
-  let config = AppConfig::get();
 
+  let config = AppConfig::get();
   let file_path = find_file_with_key(config.data_path.clone(), &key).await;
   if let Some(path) = file_path {
     let metadata = get_file_metadata(&path);
@@ -46,7 +56,9 @@ pub async fn view_route(
     context.insert("filename", &metadata.filename);
     context.insert("filesize", &metadata.filesize);
     context.insert("key", &key);
-    Ok(RawHtml(tera.render(template, &context).unwrap()))
+    Ok(Either::Left(RawHtml(
+      tera.render(template, &context).unwrap(),
+    )))
   } else {
     Err(Either::Right(NotFound(render_not_found(tera))))
   }
