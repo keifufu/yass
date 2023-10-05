@@ -35,7 +35,7 @@ Using docker compose:
 ```yaml
 version: "3"
 services:
-  cf-ddns:
+  yass:
     image: keifufu/yass:latest
     container_name: yass
     restart: unless-stopped
